@@ -1,74 +1,122 @@
-import { Image, StyleSheet, Platform } from 'react-native';
+import useBottomTabOverflow from "@/hooks/useBottomTabOverflow";
+import { useMemo } from "react";
+import {
+  FlatList,
+  ScrollView,
+  StyleSheet,
+  Text,
+  useWindowDimensions,
+  View,
+} from "react-native";
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+export default function Home() {
+  const arrayDemo = useMemo(
+    () => Array.from({ length: 100 }, (_, i) => i + 1),
+    []
+  );
 
-export default function HomeScreen() {
+  const { width } = useWindowDimensions();
+  const overflowHeight = useBottomTabOverflow();
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
+    <View style={styles.container}>
+      <ScrollView
+        contentContainerStyle={[
+          styles.scrollContainer,
+          width > 768
+            ? { paddingLeft: 116 }
+            : {
+                paddingBottom: overflowHeight + 16,
+              },
+        ]}
+        nestedScrollEnabled={true}
+      >
+        <Text style={styles.text}>Home Section</Text>
+        <FlatList
+          data={arrayDemo}
+          keyExtractor={(item) => item.toString()}
+          contentContainerStyle={[styles.arrayDemoContent, styles.wrapper]}
+          style={styles.arrayDemo}
+          nestedScrollEnabled={true}
+          showsVerticalScrollIndicator={false}
+          renderItem={({ item }) => (
+            <View style={styles.card}>
+              <Text style={styles.header}>Header {item}</Text>
+              <View style={styles.content}>
+                <Text style={styles.contentText}>Content of {item}</Text>
+              </View>
+            </View>
+          )}
         />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12'
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+        <Text style={styles.text}>Horizontal Scrolling Section</Text>
+        <FlatList
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          nestedScrollEnabled={true}
+          data={arrayDemo}
+          keyExtractor={(item) => item.toString()}
+          contentContainerStyle={[styles.arrayDemoContent, styles.wrapperHori]}
+          style={styles.arrayDemo}
+          renderItem={({ item }) => (
+            <View style={styles.card}>
+              <Text style={styles.header}>Header {item}</Text>
+              <View style={styles.content}>
+                <Text style={styles.contentText}>
+                  Content of the Header {item}
+                </Text>
+              </View>
+            </View>
+          )}
+        />
+      </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+  container: {
+    flex: 1,
+    backgroundColor: "lightblue",
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  scrollContainer: {
+    alignItems: "center",
+    gap: 16,
+    padding: 16,
+    //paddingBottom: 66,
+    paddingTop: 50,
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  text: { color: "#000", fontSize: 24 },
+  arrayDemoContent: {
+    justifyContent: "space-around",
+    flexDirection: "row",
+    gap: 12,
+    paddingBottom: 20,
   },
+  arrayDemo: {
+    backgroundColor: "white",
+    borderRadius: 10,
+    padding: 10,
+    width: "100%",
+    maxWidth: 768,
+    height: 450,
+  },
+  card: {
+    backgroundColor: "#000",
+    padding: 10,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 10,
+    elevation: 5,
+    shadowColor: "#000",
+    shadowOffset: { width: 1, height: 1 },
+    shadowRadius: 4,
+  },
+  header: { fontSize: 18, color: "#fff", fontWeight: "medium" },
+  content: { padding: 10, textAlign: "center" },
+  contentText: {
+    fontSize: 16,
+    color: "lightgray",
+  },
+  wrapper: { flexWrap: "wrap" },
+  wrapperHori: { paddingRight: 20 },
 });

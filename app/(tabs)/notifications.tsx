@@ -1,9 +1,9 @@
 import { StyleSheet, Text, View } from "react-native";
 
-export default function NotFound() {
+export default function Notifications() {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Not Found - 404</Text>
+      <Text style={styles.text}>Notifications Section</Text>
     </View>
   );
 }
@@ -13,9 +13,9 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "#000",
+    padding: 16,
+    paddingBottom: 66,
   },
-  text: {
-    fontSize: 24,
-    color: "#000",
-  },
+  text: { color: "#fff", fontSize: 24 },
 });

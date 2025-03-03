@@ -1,32 +1,56 @@
-import { SymbolView, SymbolViewProps, SymbolWeight } from 'expo-symbols';
-import { StyleProp, ViewStyle } from 'react-native';
+import { useTheme } from "@react-navigation/native";
+import { SymbolView, SymbolWeight, SymbolViewProps } from "expo-symbols";
+import { useMemo } from "react";
+import { StyleProp, useWindowDimensions, ViewProps } from "react-native";
 
-export function IconSymbol({
+interface Props {
+  name: SymbolViewProps["name"];
+  size?: number;
+  color?: string;
+  weight?: SymbolWeight;
+  style?: StyleProp<ViewProps>;
+  accessible?: boolean;
+  accessibilityLabel?: string;
+}
+
+const IconSymbol = ({
   name,
   size = 24,
   color,
+  weight = "regular",
   style,
-  weight = 'regular',
-}: {
-  name: SymbolViewProps['name'];
-  size?: number;
-  color: string;
-  style?: StyleProp<ViewStyle>;
-  weight?: SymbolWeight;
-}) {
+  accessible = true,
+  accessibilityLabel,
+}: Props): JSX.Element => {
+  const { fontScale } = useWindowDimensions();
+  const {
+    colors: { text },
+  } = useTheme();
+
+  const { scaledSize, iconColor } = useMemo(
+    () => ({ scaledSize: size * fontScale, iconColor: color || text }),
+    [color, text, size, fontScale]
+  );
+
   return (
     <SymbolView
-      weight={weight}
-      tintColor={color}
-      resizeMode="scaleAspectFit"
       name={name}
+      tintColor={iconColor}
+      weight={weight}
       style={[
         {
-          width: size,
-          height: size,
+          width: scaledSize,
+          height: scaledSize,
+          minHeight: scaledSize,
+          minWidth: scaledSize,
         },
         style,
       ]}
+      resizeMode="scaleAspectFit"
+      accessible={accessible}
+      accessibilityLabel={accessibilityLabel || name}
     />
   );
-}
+};
+
+export default IconSymbol;
