@@ -1,15 +1,12 @@
+import HapticButton from "@/components/ui/HapticButton";
 import IconSymbol from "@/components/ui/IconSymbol";
+import LargeScreenTab from "@/components/ui/LargeScreenTab";
 import { Ionicons } from "@expo/vector-icons";
+import { BottomTabBarButtonProps } from "@react-navigation/bottom-tabs";
 import { BlurView } from "expo-blur";
 import { Tabs } from "expo-router";
 import { useMemo } from "react";
-import {
-  Pressable,
-  StyleSheet,
-  Text,
-  useWindowDimensions,
-  View,
-} from "react-native";
+import { StyleSheet, useWindowDimensions, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function RootLayout() {
@@ -17,9 +14,11 @@ export default function RootLayout() {
   const { width } = useWindowDimensions();
   const isLargeScreen = useMemo(() => width > 768, [width]);
 
+  if (!width) return null;
+
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
+      <View style={[styles.header, isLargeScreen && { left: 100 }]}>
         <IconSymbol name="house.fill" size={20} color="currentColor" />
         <IconSymbol name="paperplane.fill" size={20} color="currentColor" />
         <IconSymbol name="square.and.pencil" size={20} color="currentColor" />
@@ -34,7 +33,7 @@ export default function RootLayout() {
             ...styles.tabBarBase,
             ...(isLargeScreen
               ? {
-                  paddingTop: 50 + insets.top,
+                  paddingTop: insets.top,
                   paddingBottom: insets.bottom,
                   ...styles.tabBarVert,
                 }
@@ -66,56 +65,11 @@ export default function RootLayout() {
                 /* tabBarShowLabel: false*/
                 //insta
               }),
-          tabBarButton: (props) => {
-            const { onPress, accessibilityState, children, style } = props;
-            const focused = accessibilityState?.selected;
-
-            if (!isLargeScreen) {
-              return (
-                <Pressable onPress={onPress} style={style}>
-                  {children}
-                </Pressable>
-              );
-            }
-
-            // Map route names to icon names and titles
-            const iconMap: Record<string, { icon: string; title: string }> = {
-              index: { icon: "home", title: "Home" },
-              explore: { icon: "send", title: "Explore" },
-              create: { icon: "create", title: "Create" },
-              notifications: { icon: "notifications", title: "Notifications" },
-              profile: { icon: "person", title: "Profile" },
-            };
-
-            const { icon, title } = iconMap[route.name] || {
-              icon: "help",
-              title: route.name,
-            };
-
-            return (
-              <Pressable
-                onPress={onPress}
-                style={({ hovered, pressed }) => [
-                  styles.verticalTabButton,
-                  hovered || pressed ? styles.verticalTabHovered : {},
-                ]}
-              >
-                <Ionicons
-                  name={icon as any}
-                  size={24}
-                  color={focused ? "deeppink" : "#888"}
-                />
-                <Text
-                  style={[
-                    styles.verticalTabLabel,
-                    { color: focused ? "deeppink" : "#888" },
-                  ]}
-                >
-                  {title}
-                </Text>
-              </Pressable>
-            );
-          },
+          tabBarButton: !isLargeScreen
+            ? HapticButton
+            : (props: BottomTabBarButtonProps) => (
+                <LargeScreenTab {...props} route={route} />
+              ),
         })}
       >
         <Tabs.Screen
@@ -196,8 +150,8 @@ const styles = StyleSheet.create({
   tabBarVert: {
     borderRightWidth: 0,
     flexDirection: "column",
+    minWidth: 100,
     width: 100,
-    //paddingTop: 50,
   },
   verticalTabButton: {
     width: 80,

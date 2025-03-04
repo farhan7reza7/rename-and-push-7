@@ -5,7 +5,7 @@ import {
   TextStyle,
   useWindowDimensions,
 } from "react-native";
-import Icon_Mapping from "./icon_mapping";
+import Icon_Mapping from "@/utils/icon_mapping";
 import { useMemo } from "react";
 import { useTheme } from "@react-navigation/native";
 

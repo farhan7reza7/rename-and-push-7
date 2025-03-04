@@ -10,6 +10,8 @@ const Icon_Mapping: Partial<
   "square.and.pencil": "create",
   "bell.fill": "notifications",
   "person.fill": "person",
+  "chevron.right": "chevron-right",
+  "chevron.down": "expand-more",
 };
 
 export default Icon_Mapping;

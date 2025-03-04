@@ -1,4 +1,5 @@
 import { useTheme } from "@react-navigation/native";
+import { Link } from "expo-router";
 import { StyleSheet, Text, View } from "react-native";
 
 export default function Explore() {
@@ -19,6 +20,7 @@ export default function Explore() {
       >
         Explore Content
       </Text>
+      <Link href={"./about"}>About</Link>
     </View>
   );
 }
@@ -29,7 +31,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     gap: 10,
-    backgroundColor: "deeppink",
+    backgroundColor: "lightpink",
     padding: 16,
     paddingBottom: 66,
   },

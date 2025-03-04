@@ -82,7 +82,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 16,
     padding: 16,
-    //paddingBottom: 66,
     paddingTop: 50,
   },
   text: { color: "#000", fontSize: 24 },
