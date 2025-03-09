@@ -17,6 +17,7 @@ export default function Profile() {
           </Text>
         </View>
       }
+      bottom={bottom}
     >
       <View
         style={[

@@ -1,4 +1,3 @@
-import useBottomTabOverflow from "@/hooks/useBottomTabOverflow";
 import { StyleSheet, View } from "react-native";
 import Animated, {
   interpolate,
@@ -11,17 +10,17 @@ interface Props {
   children: JSX.Element;
   headerContent: JSX.Element;
   HEADER_HEIGHT?: number;
+  bottom?: number;
 }
 
 const ParallaxEffect = ({
   headerContent,
   children,
   HEADER_HEIGHT = 250,
+  bottom = 0,
 }: Props) => {
   const srollRef = useAnimatedRef<Animated.ScrollView>();
   const scrollOffset = useScrollViewOffset(srollRef);
-  const bottom = useBottomTabOverflow();
-
   const animatedStyle = useAnimatedStyle(() => {
     return {
       transform: [

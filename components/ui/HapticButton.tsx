@@ -3,6 +3,7 @@ import { PlatformPressable } from "@react-navigation/elements";
 import * as Haptics from "expo-haptics";
 
 const HapticButton = (props: BottomTabBarButtonProps) => {
+  //if (props.href === "/about") return;
   return (
     <PlatformPressable
       {...props}

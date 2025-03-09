@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import { useColorScheme } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { CustomDarkTheme, CustomLightTheme } from "@/constants/customThemes";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -16,14 +17,15 @@ export default function RootLayout() {
   return (
     <ThemeProvider value={theme}>
       <SafeAreaProvider>
-        <Stack
-          screenOptions={{
-            headerShown: false,
-          }}
-        >
-          <Stack.Screen name="(tabs)" />
-          <Stack.Screen name="+not-found" />
-        </Stack>
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <Stack
+            screenOptions={{
+              headerShown: false,
+            }}
+          >
+            <Stack.Screen name="(tabs)" />
+          </Stack>
+        </GestureHandlerRootView>
       </SafeAreaProvider>
     </ThemeProvider>
   );

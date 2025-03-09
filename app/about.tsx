@@ -1,36 +1,22 @@
 import HelloWave from "@/components/HelloWave";
 import ParallaxEffect from "@/components/ParallaxEffect";
-import useBottomTabOverflow from "@/hooks/useBottomTabOverflow";
-import {
-  Image,
-  Platform,
-  StyleSheet,
-  Text,
-  useWindowDimensions,
-  View,
-} from "react-native";
+import { Platform, StyleSheet, Text, View } from "react-native";
+import { Image } from "expo-image";
 
-export default function Profile() {
-  const { width } = useWindowDimensions();
-  const bottom = useBottomTabOverflow();
-
+export default function About() {
   return (
     <ParallaxEffect
       headerContent={
         <View style={styles.header}>
           <Image
             source={require("@/assets/images/partial-react-logo.png")}
-            style={[styles.reactLogo, width > 768 ? { left: 100 } : {}]}
+            style={[styles.reactLogo]}
+            contentFit="cover"
           />
         </View>
       }
     >
-      <View
-        style={[
-          styles.container,
-          width > 768 ? { paddingLeft: 116 } : { paddingBottom: bottom + 16 },
-        ]}
-      >
+      <View style={[styles.container]}>
         <View style={styles.title}>
           <Text style={styles.text}>Welcome!</Text>
           <HelloWave />

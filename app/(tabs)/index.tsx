@@ -1,15 +1,24 @@
 import useBottomTabOverflow from "@/hooks/useBottomTabOverflow";
-import { useMemo } from "react";
+import { useCallback, useMemo, useRef } from "react";
 import {
+  Alert,
   FlatList,
+  Platform,
+  Pressable,
   ScrollView,
   StyleSheet,
   Text,
   useWindowDimensions,
   View,
 } from "react-native";
+import * as MediaLibrary from "expo-media-library";
+import { captureRef } from "react-native-view-shot";
+import { toJpeg } from "html-to-image";
+import { MaterialIcons } from "@expo/vector-icons";
 
 export default function Home() {
+  const screenShotViewRef = useRef(null);
+  const [isAllowed, requestPermission] = MediaLibrary.usePermissions();
   const arrayDemo = useMemo(
     () => Array.from({ length: 100 }, (_, i) => i + 1),
     []
@@ -18,8 +27,54 @@ export default function Home() {
   const { width } = useWindowDimensions();
   const overflowHeight = useBottomTabOverflow();
 
+  const screenShoter = useCallback(async () => {
+    if (!screenShotViewRef.current) {
+      Alert.alert("Can not take taking Screenshot");
+      return;
+    }
+
+    try {
+      let imageUri = "";
+      if (Platform.OS !== "web") {
+        imageUri = await captureRef(screenShotViewRef.current, {
+          width: 440,
+          height: 320,
+          quality: 1,
+        });
+      } else {
+        imageUri = await toJpeg(screenShotViewRef.current, {
+          //width: 440,
+          //height: 320,
+          quality: 1,
+        });
+      }
+      if (imageUri) {
+        if (!isAllowed) {
+          const newPermission = await requestPermission();
+          if (!newPermission.granted) {
+            Alert.alert("Need Permission to take screenshot");
+            return;
+          }
+        }
+        if (Platform.OS !== "web") {
+          await MediaLibrary.saveToLibraryAsync(imageUri);
+        } else {
+          const link = document.createElement("a");
+          link.href = imageUri;
+          link.download = "screenshot-image.jpeg";
+          link.click();
+        }
+        Alert.alert("Screenshot Saved");
+      } else {
+        Alert.alert("Failure in taking Screenshot");
+      }
+    } catch (e) {
+      Alert.alert("Error in taking Screenshot");
+    }
+  }, [isAllowed]);
+
   return (
-    <View style={styles.container}>
+    <View style={styles.container} ref={screenShotViewRef} collapsable={false}>
       <ScrollView
         contentContainerStyle={[
           styles.scrollContainer,
@@ -68,6 +123,12 @@ export default function Home() {
             </View>
           )}
         />
+
+        <View style={styles.shotContainer}>
+          <Pressable style={styles.shotBtn} onPress={screenShoter}>
+            <MaterialIcons name="save-alt" color="#000" size={38} />
+          </Pressable>
+        </View>
       </ScrollView>
     </View>
   );
@@ -118,4 +179,21 @@ const styles = StyleSheet.create({
   },
   wrapper: { flexWrap: "wrap" },
   wrapperHori: { paddingRight: 20 },
+  shotContainer: {
+    borderWidth: 4,
+    width: 84,
+    height: 84,
+    borderRadius: "50%",
+    borderColor: "yellow",
+    padding: 3,
+    backgroundColor: "#000",
+  },
+  shotBtn: {
+    backgroundColor: "#fff",
+    flex: 1,
+    borderRadius: "50%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  shotBtnText: {},
 });
