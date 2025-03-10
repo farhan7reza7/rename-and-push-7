@@ -14,10 +14,10 @@ export default function QuranBookkApp() {
   const [isLoaded, setIsLoaded] = useState(false);
   const colorScheme = useColorScheme();
 
-  const handleStart = useCallback(async () => {
+  /*const handleStart = useCallback(async () => {
     setIsLoaded(false);
     await SplashScreen.preventAutoHideAsync();
-  }, []);
+  }, []);*/
 
   const handleLoaded = useCallback(async () => {
     await SplashScreen.hideAsync();
@@ -37,7 +37,7 @@ export default function QuranBookkApp() {
           ss.webview,
           { backgroundColor: colorScheme === "dark" ? "#000" : "#fff" },
         ]}
-        onLoadStart={handleStart}
+        //onLoadStart={handleStart}
         onLoadEnd={handleLoaded}
       />
     </View>
